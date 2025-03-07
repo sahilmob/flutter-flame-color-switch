@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'dart:async';
+import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 import 'package:flame/components.dart';
 
@@ -10,10 +11,11 @@ class CircleRotator extends PositionComponent with HasGameRef<ColorSwitchGame> {
     this.thickness = 8,
     required super.size,
     required super.position,
+    this.rotationSpeed = 1,
   }) : assert(size!.x == size!.y),
        super(anchor: Anchor.center);
   final double thickness;
-  // final comp
+  final double rotationSpeed;
 
   @override
   void onLoad() {
@@ -21,6 +23,13 @@ class CircleRotator extends PositionComponent with HasGameRef<ColorSwitchGame> {
     game.colors.asMap().forEach((i, c) {
       add(Arc(color: c, startAngle: sweep * i, sweepAngle: sweep));
     });
+
+    add(
+      RotateEffect.to(
+        pi * 2,
+        EffectController(speed: rotationSpeed, infinite: true),
+      ),
+    );
   }
 }
 
