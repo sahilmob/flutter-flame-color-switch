@@ -1,28 +1,36 @@
-import 'dart:ui';
 import 'dart:async';
 import 'package:flame/game.dart';
 import 'package:flame/events.dart';
 import 'package:flame/components.dart';
+import 'package:flutter/material.dart';
 
 import 'package:color_switch/ground.dart';
 import 'package:color_switch/player.dart';
+import 'package:color_switch/circle_rotator.dart';
 
 class ColorSwitchGame extends FlameGame
     with TapCallbacks, HasKeyboardHandlerComponents {
   @override
   Color backgroundColor() => Color(0xff222222);
   late Player player;
+  final List<Color> colors;
 
-  ColorSwitchGame()
-    : super(
-        camera: CameraComponent.withFixedResolution(width: 600, height: 1000),
-      );
+  ColorSwitchGame({
+    this.colors = const [
+      Colors.redAccent,
+      Colors.greenAccent,
+      Colors.blueAccent,
+      Colors.yellowAccent,
+    ],
+  }) : super(
+         camera: CameraComponent.withFixedResolution(width: 600, height: 1000),
+       );
 
   @override
   FutureOr<void> onLoad() {
-    player = Player();
-    world.add(player);
-    world.add(Ground(position: Vector2(0, 200)));
+    player = Player(position: Vector2(0, 250));
+    _spawnObjects();
+
     return super.onLoad();
   }
 
@@ -44,5 +52,13 @@ class ColorSwitchGame extends FlameGame
   void onTapDown(TapDownEvent event) {
     player.jump();
     super.onTapDown(event);
+  }
+
+  void _spawnObjects() {
+    world.add(player);
+    world.add(
+      CircleRotator(size: Vector2(200, 200), position: Vector2(0, 100)),
+    );
+    world.add(Ground(position: Vector2(0, 400)));
   }
 }

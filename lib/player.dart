@@ -9,7 +9,7 @@ import 'package:color_switch/ground.dart';
 
 class Player extends PositionComponent
     with KeyboardHandler, HasGameRef<ColorSwitchGame> {
-  Player({this.playerRadius = 15});
+  Player({this.playerRadius = 15, super.position});
 
   final _gravity = 980;
   final double playerRadius;
