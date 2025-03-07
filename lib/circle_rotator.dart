@@ -12,7 +12,7 @@ class CircleRotator extends PositionComponent with HasGameRef<ColorSwitchGame> {
     required super.size,
     required super.position,
     this.rotationSpeed = 1,
-  }) : assert(size!.x == size!.y),
+  }) : assert(size!.x == size.y),
        super(anchor: Anchor.center);
   final double thickness;
   final double rotationSpeed;
@@ -30,6 +30,7 @@ class CircleRotator extends PositionComponent with HasGameRef<ColorSwitchGame> {
         EffectController(speed: rotationSpeed, infinite: true),
       ),
     );
+    super.onLoad();
   }
 }
 

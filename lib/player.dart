@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:color_switch/constants.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,9 +25,10 @@ class Player extends PositionComponent
   void update(double dt) {
     position += _velocity * dt;
 
-    Ground ground = game.findByKey(Ground.componentKey)!;
+    Ground? ground = game.findByKey(Ground.componentKey);
 
-    if (positionOfAnchor(Anchor.bottomCenter).y > ground.position.y) {
+    if (ground != null &&
+        positionOfAnchor(Anchor.bottomCenter).y > ground.position.y) {
       _velocity.setValues(0, 0);
       position.y = ground.position.y - height / 2;
     } else {
