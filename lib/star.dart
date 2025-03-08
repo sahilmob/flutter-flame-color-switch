@@ -1,6 +1,7 @@
+import 'dart:math';
 import 'dart:async';
 import 'package:flame/collisions.dart';
-import 'package:flame/rendering.dart';
+import 'package:flame/particles.dart';
 import 'package:flutter/material.dart';
 import 'package:flame/components.dart';
 
@@ -26,5 +27,45 @@ class Star extends PositionComponent {
       anchor: Anchor.center,
     );
     super.render(canvas);
+  }
+
+  void showCollectEffect() {
+    final rnd = Random();
+    Vector2 randomVec2() => (Vector2.random(rnd) - Vector2.random(rnd)) * 80;
+
+    parent?.add(
+      ParticleSystemComponent(
+        position: position,
+        particle: Particle.generate(
+          lifespan: 1,
+          count: 30,
+          generator: (i) {
+            return AcceleratedParticle(
+              speed: randomVec2(),
+              acceleration: randomVec2(),
+              child: RotatingParticle(
+                to: rnd.nextDouble() * pi * 2,
+                child: ComputedParticle(
+                  renderer: (canvas, particle) {
+                    _starSprite.render(
+                      canvas,
+                      size: (size / 2) * (1 - particle.progress),
+                      anchor: Anchor.center,
+                      overridePaint:
+                          Paint()
+                            ..color = Colors.white10.withAlpha(
+                              ((1 - particle.progress) * 100).floor(),
+                            ),
+                    );
+                  },
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+
+    removeFromParent();
   }
 }

@@ -65,7 +65,6 @@ class ColorSwitchGame extends FlameGame
   }
 
   void _spawnObjects() {
-    world.add(player);
     world.add(ColorSwitcher(position: Vector2(0, 180)));
     world.add(CircleRotator(size: Vector2(200, 200), position: Vector2.zero()));
     world.add(Star(position: Vector2.zero()));
@@ -77,7 +76,7 @@ class ColorSwitchGame extends FlameGame
       CircleRotator(size: Vector2(180, 180), position: Vector2(0, -400)),
     );
     world.add(Star(position: Vector2(0, -400)));
-
+    world.add(player);
     world.add(Ground(position: Vector2(0, 400)));
   }
 

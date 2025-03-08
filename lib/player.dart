@@ -76,7 +76,7 @@ class Player extends PositionComponent
         game.gameOver();
       }
     } else if (other is Star) {
-      other.removeFromParent();
+      other.showCollectEffect();
       game.increaseScore();
     }
 
