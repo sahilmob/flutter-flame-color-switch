@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flame/game.dart';
 import 'package:flame/events.dart';
 import 'package:flame/components.dart';
+import 'package:flame/rendering.dart';
 import 'package:flutter/material.dart';
 
 import 'package:color_switch/ground.dart';
@@ -10,7 +11,12 @@ import 'package:color_switch/circle_rotator.dart';
 import 'package:color_switch/color_switcher.dart';
 
 class ColorSwitchGame extends FlameGame
-    with TapCallbacks, HasKeyboardHandlerComponents, HasCollisionDetection {
+    with
+        TapCallbacks,
+        HasCollisionDetection,
+        HasKeyboardHandlerComponents,
+        HasDecorator,
+        HasTimeScale {
   @override
   Color backgroundColor() => Color(0xff222222);
   late Player player;
@@ -29,6 +35,7 @@ class ColorSwitchGame extends FlameGame
 
   @override
   FutureOr<void> onLoad() {
+    decorator = PaintDecorator.blur(0.0);
     player = Player(position: Vector2(0, 250));
     _spawnObjects();
 
@@ -67,5 +74,17 @@ class ColorSwitchGame extends FlameGame
     player = Player(position: Vector2(0, 250));
     camera.moveTo(Vector2(0, 0));
     _spawnObjects();
+  }
+
+  bool get isGamePaused => timeScale == 0;
+
+  void pauseGame() {
+    (decorator as PaintDecorator).addBlur(10);
+    timeScale = 0.0;
+  }
+
+  void resumeGame() {
+    (decorator as PaintDecorator).addBlur(0.0);
+    timeScale = 1;
   }
 }
