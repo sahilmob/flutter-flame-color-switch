@@ -7,9 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:color_switch/ground.dart';
 import 'package:color_switch/player.dart';
 import 'package:color_switch/circle_rotator.dart';
+import 'package:color_switch/color_switcher.dart';
 
 class ColorSwitchGame extends FlameGame
-    with TapCallbacks, HasKeyboardHandlerComponents {
+    with TapCallbacks, HasKeyboardHandlerComponents, HasCollisionDetection {
   @override
   Color backgroundColor() => Color(0xff222222);
   late Player player;
@@ -56,9 +57,15 @@ class ColorSwitchGame extends FlameGame
 
   void _spawnObjects() {
     world.add(player);
-    world.add(
-      CircleRotator(size: Vector2(200, 200), position: Vector2(0, 100)),
-    );
+    world.add(ColorSwitcher(position: Vector2(0, 180)));
+    world.add(CircleRotator(size: Vector2(200, 200), position: Vector2.zero()));
     world.add(Ground(position: Vector2(0, 400)));
+  }
+
+  void gameOver() {
+    world.removeWhere((_) => true);
+    player = Player(position: Vector2(0, 250));
+    camera.moveTo(Vector2(0, 0));
+    _spawnObjects();
   }
 }

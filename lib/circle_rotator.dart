@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'dart:async';
+import 'package:flame/collisions.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 import 'package:flame/components.dart';
@@ -35,12 +36,18 @@ class CircleRotator extends PositionComponent with HasGameRef<ColorSwitchGame> {
 }
 
 class Arc extends PositionComponent with ParentIsA<CircleRotator> {
-  final paint = Paint()..style = PaintingStyle.stroke;
-  final double startAngle;
-  final double sweepAngle;
+  final _paint = Paint()..style = PaintingStyle.stroke;
+  final Color color;
+  final double _startAngle;
+  final double _sweepAngle;
 
-  Arc({required color, required this.startAngle, required this.sweepAngle}) {
-    paint.color = color;
+  Arc({
+    required this.color,
+    required double startAngle,
+    required double sweepAngle,
+  }) : _sweepAngle = sweepAngle,
+       _startAngle = startAngle {
+    _paint.color = color;
     anchor = Anchor.center;
   }
 
@@ -48,9 +55,10 @@ class Arc extends PositionComponent with ParentIsA<CircleRotator> {
   FutureOr<void> onLoad() {
     size = parent.size;
     position = size / 2;
-    paint
+    _paint
       ..style
       ..strokeWidth = parent.thickness;
+    _addHitbox();
     return super.onLoad();
   }
 
@@ -58,11 +66,38 @@ class Arc extends PositionComponent with ParentIsA<CircleRotator> {
   void render(Canvas canvas) {
     canvas.drawArc(
       size.toRect().deflate(parent.thickness / 2),
-      startAngle,
-      sweepAngle,
+      _startAngle,
+      _sweepAngle,
       false,
-      paint,
+      _paint,
     );
     super.render(canvas);
+  }
+
+  void _addHitbox() {
+    const precision = 8;
+    final center = size / 2;
+    final segment = _sweepAngle / (precision - 1);
+    final radius = size.x / 2;
+
+    List<Vector2> vertices = [];
+
+    for (int i = 0; i < precision; i++) {
+      final thisSegment = _startAngle + segment * i;
+      vertices.add(
+        center + Vector2(cos(thisSegment), sin(thisSegment)) * radius,
+      );
+    }
+
+    for (int i = precision - 1; i >= 0; i--) {
+      final thisSegment = _startAngle + segment * i;
+      vertices.add(
+        center +
+            Vector2(cos(thisSegment), sin(thisSegment)) *
+                (radius - parent.thickness),
+      );
+    }
+
+    add(PolygonHitbox(vertices, collisionType: CollisionType.passive));
   }
 }
