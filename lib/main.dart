@@ -32,12 +32,25 @@ class _HomeState extends State<Home> {
           if (!_game.isGamePaused)
             Align(
               alignment: Alignment.topLeft,
-              child: IconButton(
-                onPressed: () {
-                  _game.pauseGame();
-                  setState(() {});
-                },
-                icon: const Icon(Icons.pause),
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      _game.pauseGame();
+                      setState(() {});
+                    },
+                    icon: const Icon(Icons.pause),
+                  ),
+                  SizedBox(width: 10),
+                  ValueListenableBuilder(
+                    valueListenable: _game.score,
+                    builder:
+                        (_, v, _) => Text(
+                          v.toString(),
+                          style: const TextStyle(fontSize: 24),
+                        ),
+                  ),
+                ],
               ),
             ),
           if (_game.isGamePaused)

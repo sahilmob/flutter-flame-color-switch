@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flame/image_composition.dart';
 
 import 'package:color_switch/game.dart';
+import 'package:color_switch/star.dart';
 import 'package:color_switch/ground.dart';
 import 'package:color_switch/color_switcher.dart';
 import 'package:color_switch/circle_rotator.dart';
@@ -74,6 +75,9 @@ class Player extends PositionComponent
       if (_color != other.color) {
         game.gameOver();
       }
+    } else if (other is Star) {
+      other.removeFromParent();
+      game.increaseScore();
     }
 
     super.onCollision(intersectionPoints, other);

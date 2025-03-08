@@ -5,6 +5,7 @@ import 'package:flame/components.dart';
 import 'package:flame/rendering.dart';
 import 'package:flutter/material.dart';
 
+import 'package:color_switch/star.dart';
 import 'package:color_switch/ground.dart';
 import 'package:color_switch/player.dart';
 import 'package:color_switch/circle_rotator.dart';
@@ -21,6 +22,7 @@ class ColorSwitchGame extends FlameGame
   Color backgroundColor() => Color(0xff222222);
   late Player player;
   final List<Color> colors;
+  ValueNotifier<int> score = ValueNotifier(0);
 
   ColorSwitchGame({
     this.colors = const [
@@ -66,6 +68,16 @@ class ColorSwitchGame extends FlameGame
     world.add(player);
     world.add(ColorSwitcher(position: Vector2(0, 180)));
     world.add(CircleRotator(size: Vector2(200, 200), position: Vector2.zero()));
+    world.add(Star(position: Vector2.zero()));
+    world.add(ColorSwitcher(position: Vector2(0, -200)));
+    world.add(
+      CircleRotator(size: Vector2(150, 150), position: Vector2(0, -400)),
+    );
+    world.add(
+      CircleRotator(size: Vector2(180, 180), position: Vector2(0, -400)),
+    );
+    world.add(Star(position: Vector2(0, -400)));
+
     world.add(Ground(position: Vector2(0, 400)));
   }
 
@@ -73,6 +85,7 @@ class ColorSwitchGame extends FlameGame
     world.removeWhere((_) => true);
     player = Player(position: Vector2(0, 250));
     camera.moveTo(Vector2(0, 0));
+    score.value = 0;
     _spawnObjects();
   }
 
@@ -86,5 +99,9 @@ class ColorSwitchGame extends FlameGame
   void resumeGame() {
     (decorator as PaintDecorator).addBlur(0.0);
     timeScale = 1;
+  }
+
+  void increaseScore() {
+    score.value++;
   }
 }
